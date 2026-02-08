@@ -242,7 +242,6 @@ namespace project1
             label9.Size = new Size(88, 24);
             label9.TabIndex = 12;
             label9.Text = "Quantity";
-            label9.Click += label9_Click;
             // 
             // insertbtn
             // 
@@ -358,7 +357,6 @@ namespace project1
             productNametxt.Name = "productNametxt";
             productNametxt.Size = new Size(204, 25);
             productNametxt.TabIndex = 21;
-            productNametxt.TextChanged += productNametxt_TextChanged;
             // 
             // product
             // 
@@ -388,7 +386,6 @@ namespace project1
             Text = "product";
             Activated += product_Activated;
             Load += product_Load;
-            DoubleClick += product_DoubleClick;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();

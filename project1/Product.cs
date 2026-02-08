@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.Logging;
 using System;
 using System.Data;
 using System.Drawing;
@@ -70,7 +69,8 @@ namespace project1
 
             try
             {
-                con.Open();
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
 
                 SqlCommand cmd = new SqlCommand(
                     @"INSERT INTO Products 
@@ -84,18 +84,19 @@ namespace project1
 
                 cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Product Added Successfully");
+                MessageBox.Show("Product added successfully");
 
                 DisplayProducts();
                 ResetFields();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                MessageBox.Show(ex.Message);
             }
             finally
             {
-                con.Close();
+                if (con.State == ConnectionState.Open)
+                    con.Close();
             }
         }
 
@@ -113,15 +114,16 @@ namespace project1
 
             try
             {
-                con.Open();
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
 
                 SqlCommand cmd = new SqlCommand(
                     @"UPDATE Products 
-                      SET ProductName=@name,
-                          Category=@cat,
-                          Price=@price,
-                          Quantity=@qty
-                      WHERE ProductId=@id", con);
+                      SET ProductName = @name,
+                          Category = @cat,
+                          Price = @price,
+                          Quantity = @qty
+                      WHERE ProductId = @id", con);
 
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@name", productNametxt.Text);
@@ -131,7 +133,7 @@ namespace project1
 
                 cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Product Updated Successfully");
+                MessageBox.Show("Product updated successfully");
 
                 DisplayProducts();
                 ResetFields();
@@ -142,11 +144,12 @@ namespace project1
             }
             finally
             {
-                con.Close();
+                if (con.State == ConnectionState.Open)
+                    con.Close();
             }
         }
 
-        // ================= DELETE (SOFT DELETE) =================
+        // ================= SOFT DELETE =================
         private void deletebtn_Click(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedRows.Count == 0)
@@ -160,15 +163,16 @@ namespace project1
 
             try
             {
-                con.Open();
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
 
                 SqlCommand cmd = new SqlCommand(
-                    "UPDATE Products SET IsActive = 0 WHERE ProductId=@id", con);
+                    "UPDATE Products SET IsActive = 0 WHERE ProductId = @id", con);
 
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Product Deleted Successfully");
+                MessageBox.Show("Product deleted successfully (soft delete)");
 
                 DisplayProducts();
                 ResetFields();
@@ -179,7 +183,8 @@ namespace project1
             }
             finally
             {
-                con.Close();
+                if (con.State == ConnectionState.Open)
+                    con.Close();
             }
         }
 
@@ -202,7 +207,7 @@ namespace project1
             }
         }
 
-        // ================= CLEAR BUTTON =================
+        // ================= CLEAR =================
         private void clearbtn_Click(object sender, EventArgs e)
         {
             ResetFields();
@@ -222,10 +227,10 @@ namespace project1
             dataGridView1.DefaultCellStyle.SelectionForeColor = Color.White;
         }
 
-        // ====== EMPTY EVENTS TO AVOID DESIGNER ERRORS ======
-        private void product_DoubleClick(object sender, EventArgs e) { }
-        private void label9_Click(object sender, EventArgs e) { }
-        private void productNametxt_TextChanged(object sender, EventArgs e) { }
+        private void product_Activated(object sender, EventArgs e)
+        {
+            DisplayProducts();
+        }
 
         // ================= SIDE MENU =================
         private void label3_Click(object sender, EventArgs e)
@@ -253,13 +258,5 @@ namespace project1
         {
             Application.Exit();
         }
-
-        private void product_Activated(object sender, EventArgs e)
-        {
-            DisplayProducts();
-        }
-
-       
-
     }
 }

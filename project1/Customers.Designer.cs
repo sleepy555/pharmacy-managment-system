@@ -82,7 +82,7 @@
             dataGridView1.Name = "dataGridView1";
             dataGridView1.Size = new Size(442, 349);
             dataGridView1.TabIndex = 34;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
+            
             dataGridView1.DoubleClick += dataGridView1_DoubleClick;
             // 
             // deletebtn
@@ -231,7 +231,7 @@
             label3.Size = new Size(98, 22);
             label3.TabIndex = 7;
             label3.Text = "Customers";
-            label3.Click += label3_Click;
+            
             // 
             // pictureBox3
             // 
@@ -303,7 +303,7 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(266, 677);
             panel1.TabIndex = 21;
-            panel1.Paint += panel1_Paint;
+            
             // 
             // label10
             // 
