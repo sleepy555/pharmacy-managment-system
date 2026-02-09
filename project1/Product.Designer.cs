@@ -313,7 +313,7 @@ namespace project1
             label10.AutoSize = true;
             label10.Font = new Font("Times New Roman", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label10.ForeColor = Color.FromArgb(44, 62, 80);
-            label10.Location = new Point(666, 19);
+            label10.Location = new Point(697, 19);
             label10.Name = "label10";
             label10.Size = new Size(104, 26);
             label10.TabIndex = 19;

@@ -225,9 +225,9 @@ namespace project1
             {
                 con.Open();
 
-                // 1️⃣ Get stock & price
+                // 1️⃣ Get stock, price & expiry date
                 SqlCommand getProduct = new SqlCommand(
-                    "SELECT Quantity, Price FROM Products WHERE ProductId=@PID", con);
+                    "SELECT Quantity, Price, ExpiryDate FROM Products WHERE ProductId=@PID", con);
                 getProduct.Parameters.AddWithValue("@PID", ProductIdComboBox.Text);
 
                 int availableQty;
@@ -243,6 +243,20 @@ namespace project1
 
                     availableQty = Convert.ToInt32(reader["Quantity"]);
                     unitPrice = Convert.ToDecimal(reader["Price"]);
+
+                    // 🔴 EXPIRED MEDICINE CHECK
+                    DateTime expiryDate = Convert.ToDateTime(reader["ExpiryDate"]);
+
+                    if (expiryDate < DateTime.Today)
+                    {
+                        MessageBox.Show(
+                            "This medicine is expired and cannot be sold.",
+                            "Expired Medicine",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
+                        return; // ⛔ stop sale
+                    }
                 }
 
                 if (quantitySold > availableQty)
@@ -288,6 +302,7 @@ namespace project1
                 con.Close();
             }
         }
+
 
 
         private void updatebtn_Click(object sender, EventArgs e)

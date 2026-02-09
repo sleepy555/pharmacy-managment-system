@@ -351,6 +351,7 @@
             ProductNametxt.ForeColor = Color.FromArgb(44, 62, 80);
             ProductNametxt.Location = new Point(912, 84);
             ProductNametxt.Name = "ProductNametxt";
+            ProductNametxt.ReadOnly = true;
             ProductNametxt.Size = new Size(204, 25);
             ProductNametxt.TabIndex = 56;
             // 
@@ -391,6 +392,7 @@
             Totaltxt.ForeColor = Color.FromArgb(44, 62, 80);
             Totaltxt.Location = new Point(1283, 84);
             Totaltxt.Name = "Totaltxt";
+            Totaltxt.ReadOnly = true;
             Totaltxt.Size = new Size(119, 25);
             Totaltxt.TabIndex = 60;
             // 
