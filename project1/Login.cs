@@ -14,7 +14,8 @@ namespace project1
 
         private void loginbtn_Click(object sender, EventArgs e)
         {
-            try {
+            try
+            {
                 if (usertxt.Text == "admin" && passtxt.Text == "messi")
                 {
                     MessageBox.Show("Login Successfull");
@@ -23,11 +24,13 @@ namespace project1
                     this.Hide();
                 }
 
-                else {
+                else
+                {
                     MessageBox.Show("Invalid Username or Password!!!");
                 }
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message);
             }
         }
@@ -36,10 +39,14 @@ namespace project1
         {
             ///usertxt.Clear();
             ///passtxt.Clear();
-           /// usertxt.Focus();
-           usertxt.Text = "";
-           passtxt.Text = ""; 
+            /// usertxt.Focus();
+            usertxt.Text = "";
+            passtxt.Text = "";
         }
 
+        private void login_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

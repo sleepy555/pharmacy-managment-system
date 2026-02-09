@@ -18,6 +18,9 @@ namespace project1
         public product()
         {
             InitializeComponent();
+
+            // IMPORTANT: attach CellFormatting event
+            dataGridView1.CellFormatting += dataGridView1_CellFormatting;
         }
 
         // ================= DISPLAY PRODUCTS =================
@@ -53,6 +56,40 @@ namespace project1
             CategoryComboBx.SelectedIndex = -1;
             Pricetxt.Clear();
             Quantitytxt.Clear();
+            dtpExpiryDate.Value = DateTime.Today;
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+            Customers c = new Customers();
+            c.Show();
+            this.Hide();
+        }
+
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+            Sales s = new Sales();
+            s.Show();
+            this.Hide();
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+            login l = new login();
+            l.Show();
+            this.Hide();
+        }
+
+        private void cross_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+
+        private void product_Activated(object sender, EventArgs e)
+        {
+            DisplayProducts();
         }
 
         // ================= INSERT =================
@@ -73,14 +110,15 @@ namespace project1
                     con.Open();
 
                 SqlCommand cmd = new SqlCommand(
-                    @"INSERT INTO Products 
-                      (ProductName, Category, Price, Quantity, IsActive)
-                      VALUES (@name, @cat, @price, @qty, 1)", con);
+                    @"INSERT INTO Products
+                      (ProductName, Category, Price, Quantity, ExpiryDate, IsActive)
+                      VALUES (@name, @cat, @price, @qty, @exp, 1)", con);
 
                 cmd.Parameters.AddWithValue("@name", productNametxt.Text);
                 cmd.Parameters.AddWithValue("@cat", CategoryComboBx.Text);
                 cmd.Parameters.AddWithValue("@price", decimal.Parse(Pricetxt.Text));
                 cmd.Parameters.AddWithValue("@qty", int.Parse(Quantitytxt.Text));
+                cmd.Parameters.AddWithValue("@exp", dtpExpiryDate.Value.Date);
 
                 cmd.ExecuteNonQuery();
 
@@ -105,7 +143,7 @@ namespace project1
         {
             if (dataGridView1.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Select product to update");
+                MessageBox.Show("Select a product to update");
                 return;
             }
 
@@ -118,11 +156,12 @@ namespace project1
                     con.Open();
 
                 SqlCommand cmd = new SqlCommand(
-                    @"UPDATE Products 
-                      SET ProductName = @name,
-                          Category = @cat,
-                          Price = @price,
-                          Quantity = @qty
+                    @"UPDATE Products SET
+                        ProductName = @name,
+                        Category = @cat,
+                        Price = @price,
+                        Quantity = @qty,
+                        ExpiryDate = @exp
                       WHERE ProductId = @id", con);
 
                 cmd.Parameters.AddWithValue("@id", id);
@@ -130,6 +169,7 @@ namespace project1
                 cmd.Parameters.AddWithValue("@cat", CategoryComboBx.Text);
                 cmd.Parameters.AddWithValue("@price", decimal.Parse(Pricetxt.Text));
                 cmd.Parameters.AddWithValue("@qty", int.Parse(Quantitytxt.Text));
+                cmd.Parameters.AddWithValue("@exp", dtpExpiryDate.Value.Date);
 
                 cmd.ExecuteNonQuery();
 
@@ -154,7 +194,7 @@ namespace project1
         {
             if (dataGridView1.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Select product to delete");
+                MessageBox.Show("Select a product to delete");
                 return;
             }
 
@@ -172,7 +212,7 @@ namespace project1
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Product deleted successfully (soft delete)");
+                MessageBox.Show("Product deleted (soft delete)");
 
                 DisplayProducts();
                 ResetFields();
@@ -191,19 +231,24 @@ namespace project1
         // ================= DATAGRID DOUBLE CLICK =================
         private void dataGridView1_DoubleClick(object sender, EventArgs e)
         {
-            if (dataGridView1.CurrentRow != null)
+            if (dataGridView1.CurrentRow == null) return;
+
+            productNametxt.Text =
+                dataGridView1.CurrentRow.Cells["ProductName"].Value?.ToString();
+
+            CategoryComboBx.Text =
+                dataGridView1.CurrentRow.Cells["Category"].Value?.ToString();
+
+            Pricetxt.Text =
+                dataGridView1.CurrentRow.Cells["Price"].Value?.ToString();
+
+            Quantitytxt.Text =
+                dataGridView1.CurrentRow.Cells["Quantity"].Value?.ToString();
+
+            if (dataGridView1.CurrentRow.Cells["ExpiryDate"].Value != DBNull.Value)
             {
-                productNametxt.Text =
-                    dataGridView1.CurrentRow.Cells["ProductName"].Value?.ToString() ?? "";
-
-                CategoryComboBx.Text =
-                    dataGridView1.CurrentRow.Cells["Category"].Value?.ToString() ?? "";
-
-                Pricetxt.Text =
-                    dataGridView1.CurrentRow.Cells["Price"].Value?.ToString() ?? "";
-
-                Quantitytxt.Text =
-                    dataGridView1.CurrentRow.Cells["Quantity"].Value?.ToString() ?? "";
+                dtpExpiryDate.Value =
+                    Convert.ToDateTime(dataGridView1.CurrentRow.Cells["ExpiryDate"].Value);
             }
         }
 
@@ -218,45 +263,35 @@ namespace project1
         {
             DisplayProducts();
 
-            Color customColor = Color.FromArgb(44, 62, 80);
+            Color headerColor = Color.FromArgb(44, 62, 80);
 
             dataGridView1.EnableHeadersVisualStyles = false;
-            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = customColor;
+            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = headerColor;
             dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dataGridView1.DefaultCellStyle.SelectionBackColor = customColor;
-            dataGridView1.DefaultCellStyle.SelectionForeColor = Color.White;
         }
 
-        private void product_Activated(object sender, EventArgs e)
+        // ================= EXPIRY COLOR LOGIC =================
+        private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            DisplayProducts();
-        }
+            if (dataGridView1.Columns[e.ColumnIndex].Name == "ExpiryDate" &&
+                e.Value != null &&
+                DateTime.TryParse(e.Value.ToString(), out DateTime expiryDate))
+            {
+                DateTime today = DateTime.Today;
 
-        // ================= SIDE MENU =================
-        private void label3_Click(object sender, EventArgs e)
-        {
-            Customers c = new Customers();
-            c.Show();
-            this.Hide();
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-            Sales s = new Sales();
-            s.Show();
-            this.Hide();
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-            login l = new login();
-            l.Show();
-            this.Hide();
-        }
-
-        private void cross_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
+                if (expiryDate < today)
+                {
+                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.LightCoral;
+                }
+                else if (expiryDate <= today.AddDays(30))
+                {
+                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.Khaki;
+                }
+                else
+                {
+                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.LightGreen;
+                }
+            }
         }
     }
 }

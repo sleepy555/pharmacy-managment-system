@@ -56,6 +56,8 @@ namespace project1
             label7 = new Label();
             CategoryComboBx = new ComboBox();
             productNametxt = new TextBox();
+            dtpExpiryDate = new DateTimePicker();
+            label11 = new Label();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
@@ -303,6 +305,7 @@ namespace project1
             dataGridView1.Name = "dataGridView1";
             dataGridView1.Size = new Size(540, 349);
             dataGridView1.TabIndex = 18;
+            dataGridView1.CellFormatting += dataGridView1_CellFormatting;
             dataGridView1.DoubleClick += dataGridView1_DoubleClick;
             // 
             // label10
@@ -321,7 +324,7 @@ namespace project1
             cross.AutoSize = true;
             cross.Font = new Font("Times New Roman", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             cross.ForeColor = Color.FromArgb(44, 62, 80);
-            cross.Location = new Point(1152, 3);
+            cross.Location = new Point(1359, 0);
             cross.Name = "cross";
             cross.Size = new Size(28, 26);
             cross.TabIndex = 20;
@@ -358,12 +361,33 @@ namespace project1
             productNametxt.Size = new Size(204, 25);
             productNametxt.TabIndex = 21;
             // 
+            // dtpExpiryDate
+            // 
+            dtpExpiryDate.Format = DateTimePickerFormat.Short;
+            dtpExpiryDate.Location = new Point(1152, 97);
+            dtpExpiryDate.Name = "dtpExpiryDate";
+            dtpExpiryDate.Size = new Size(200, 23);
+            dtpExpiryDate.TabIndex = 22;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Font = new Font("Times New Roman", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label11.ForeColor = Color.FromArgb(44, 62, 80);
+            label11.Location = new Point(1152, 70);
+            label11.Name = "label11";
+            label11.Size = new Size(116, 24);
+            label11.TabIndex = 23;
+            label11.Text = "Expiry Date";
+            // 
             // product
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
-            ClientSize = new Size(1182, 676);
+            ClientSize = new Size(1387, 676);
+            Controls.Add(label11);
+            Controls.Add(dtpExpiryDate);
             Controls.Add(productNametxt);
             Controls.Add(cross);
             Controls.Add(label10);
@@ -431,5 +455,7 @@ namespace project1
         private Label label7;
         private ComboBox CategoryComboBx;
         private TextBox productNametxt;
+        private DateTimePicker dtpExpiryDate;
+        private Label label11;
     }
 }
